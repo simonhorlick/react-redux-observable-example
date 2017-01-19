@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchUser, abortFetchUser } from '../actions';
+import { createFetchUserAction, abortFetchUser } from '../actions';
 
 // Component
 const Example = ({ user, fetchUser, abortFetchUser }) => (
@@ -15,7 +15,7 @@ const Example = ({ user, fetchUser, abortFetchUser }) => (
 const mapStateToProps = ({ user }) => ({ user });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchUser: () => dispatch(fetchUser('simonhorlick')),
+  fetchUser: () => dispatch(createFetchUserAction('simonhorlick')),
   abortFetchUser: () => dispatch(abortFetchUser())
 });
 

@@ -11,17 +11,20 @@ var id = 0;
 // a dollar sign to indicate a stream of actions).
 //
 //
-export const fetchUserEpic = action$ =>
-  action$.ofType(FETCH_USER)
+export const fetchUserEpic = action$ => {
+  console.log("fetchUserEpic called " + JSON.stringify(action$));
+
+  return action$.ofType(FETCH_USER)
   // Discard in-flight request if fetchUser is called again.
-  .switchMap(action =>
-    Rx.Observable.of({ id: ++id, name: 'Bilbo Baggins', timestamp: new Date() })
+  .switchMap(action => {
+    console.log("switchmap action " + JSON.stringify(action));
+    return Rx.Observable.of({ id: ++id, name: 'Bilbo Baggins', timestamp: new Date() })
     // Delaying to emulate an async request, like Rx.Observable.ajax('/api/path')
     .delay(1000)
     // When our request comes back, we transform it into an action
     // that is then automatically dispatched by the middleware
     .map(
-      payload => ({ type: FETCH_USER_FULFILLED, payload })
+      payload => createFetchUserFulfilledAction(payload)
     )
     // Abort fetching the user if someone dispatches an abort action
     .takeUntil(
@@ -30,7 +33,8 @@ export const fetchUserEpic = action$ =>
     // Let's us immediately update the user's state so we can display
     // loading messages to the user, etc.
     .startWith({ type: FETCH_USER_PENDING })
-  );
+  });
+};
 
 // // epic
 // export const fetchUserEpic = action$ =>
@@ -43,8 +47,6 @@ export const fetchUserEpic = action$ =>
 //     );
 
 // action creators
-export const fetchUser = username => ({ type: FETCH_USER, payload: username });
-export const fetchUserFulfilled = payload => ({ type: FETCH_USER_FULFILLED, payload });
-
-// Plain old action
-export const abortFetchUser = () => ({ type: FETCH_USER_ABORTED });
+export const createFetchUserAction = username => ({ type: FETCH_USER, payload: username });
+export const createFetchUserFulfilledAction = payload => ({ type: FETCH_USER_FULFILLED, payload });
+export const createAbortFetchUserAction = () => ({ type: FETCH_USER_ABORTED });

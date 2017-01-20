@@ -9,16 +9,11 @@ var id = 0;
 
 // An Epic operates on a stream of actions (by convention we suffix action with
 // a dollar sign to indicate a stream of actions).
-//
-//
-export const fetchUserEpic = action$ => {
-  console.log("fetchUserEpic called " + JSON.stringify(action$));
-
-  return action$.ofType(FETCH_USER)
+export const fetchUserEpic = action$ =>
+  action$.ofType(FETCH_USER)
   // Discard in-flight request if fetchUser is called again.
-  .switchMap(action => {
-    console.log("switchmap action " + JSON.stringify(action));
-    return Rx.Observable.of({ id: ++id, name: 'Bilbo Baggins', timestamp: new Date() })
+  .switchMap(action =>
+    Rx.Observable.of({ id: ++id, name: 'Bilbo Baggins', timestamp: new Date() })
     // Delaying to emulate an async request, like Rx.Observable.ajax('/api/path')
     .delay(1000)
     // When our request comes back, we transform it into an action
@@ -32,19 +27,7 @@ export const fetchUserEpic = action$ => {
     )
     // Let's us immediately update the user's state so we can display
     // loading messages to the user, etc.
-    .startWith({ type: FETCH_USER_PENDING })
-  });
-};
-
-// // epic
-// export const fetchUserEpic = action$ =>
-//   action$
-//     .ofType(FETCH_USER_PENDING)
-//     .mergeMap(action => Rx.Observable
-//       .of({ id: 1, name: 'Bilbo Baggins', timestamp: new Date() })
-//       .delay(1000)
-//       .map(response => fetchUserFulfilled(response))
-//     );
+    .startWith({ type: FETCH_USER_PENDING });
 
 // action creators
 export const createFetchUserAction = username => ({ type: FETCH_USER, payload: username });
